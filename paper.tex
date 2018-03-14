@@ -1,0 +1,113 @@
+%Fiquemos com Deus e Nossa Senhora!
+\documentclass[journal]{IEEEtran}
+
+\usepackage{url}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{setspace}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{latexsym}
+\usepackage{pstricks}
+\usepackage{color}
+% \usepackage[graphicx]{realboxes}
+\usepackage{rotating}
+
+
+\newcommand{\moldura}[1]{{\fboxsep = 0 pt \framebox{#1}}}
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+
+\begin{document}
+
+\title{FEMa: A Finite Element Machine for Fast Learning}
+
+\author{Danillo~Roberto~Pereira, Marco Ant\^onio Piteri, Andr\'e~Nunes~Souza,        
+		Jo\~ao~Paulo~Papa,~\IEEEmembership{Member,~IEEE,}
+        and~Hojjat~Adeli,~\IEEEmembership{Fellow,~IEEE,~Distinguished Member, ~ASCE,~Fellow,~AAAS,~Fellow~AIMBE,~Fellow~American~Neurological~ Association}% <-this % stops a space
+\thanks{D. Pereira and J. Papa are with the Department
+of Computing, S\~ao Paulo State University, Bauru, SP, 17033-360
+ Brazil e-mail: dpereira@ic.unicamp.br, papa@fc.unesp.br}% <-this % stops a space
+ \thanks{M. Piteri is with the Department
+of Computing, S\~ao Paulo State University, Presidente Prudente, SP
+ Brazil e-mail: piteri@fct.unesp.br}
+ \thanks{A. Souza is with the Department
+of Electrical Engineering, S\~ao Paulo State University, Bauru, SP, 17033-360
+ Brazil e-mail: andrejau@feb.unesp.br}
+\thanks{H. Adeli is with the Department of Civil, Environmental and Geodetic Engineering, The Ohio State University, Columbus, OH 43210 USA e-mail: adeli.1@osu.edu}% <-this % stops a space
+\thanks{This work has been submitted to the IEEE for possible publication.  Copyright may be transferred without notice, after which this version may no longer be accessible.}}
+
+\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
+{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
+
+\maketitle
+
+\begin{abstract}
+Machine learning has played an important role in the past decades, being in lockstep with the main advances in computer technology. Given the massive amount of data generated daily, there is a need for even faster and effective learning algorithms that can provide updated models for real-time applications and on-demand tools. In this paper, we propose FEMa - A Finite Element Machine classifier - for supervised learning problems, where each training sample is the center of a basis function, and the whole training set is modeled as a probabilistic manifold for classification purposes. FEMa has its theoretical basis in the Finite Element Method, which is widely used for numeral analysis in engineering problems. We show FEMa is parameterless and it has a quadratic complexity for both training and classification phases when we use basis functions that obey some properties, as well as the proposed classifier can obtain very competitive results when compared against some state-of-the-art supervised pattern recognition techniques.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Finite element methods, Pattern classification, Pattern recognition
+\end{IEEEkeywords}
+
+\IEEEpeerreviewmaketitle
+
+\input{introduction.tex}
+\input{fem.tex}
+\input{fema.tex}
+\input{experiments.tex}
+\input{conclusions.tex}
+
+\section*{Acknowledgment}
+The authors are grateful to FAPESP grant \#2014/16250-9, FAPESP/OSU grant \#2015/50319-9, as well as CNPq grant \#306166/2014-3.
+
+
+% Can use something like this to put references on a page
+% by themselves when using endfloat and the captionsoff option.
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+%\begin{IEEEbiography}{Michael Shell}
+%Biography text here.
+%\end{IEEEbiography}
+
+% if you will not have a photo at all:
+%\begin{IEEEbiographynophoto}{John Doe}
+%Biography text here.
+%\end{IEEEbiographynophoto}
+
+% insert where needed to balance the two columns on the last page with
+% biographies
+%\newpage
+
+%\begin{IEEEbiographynophoto}{Jane Doe}
+%Biography text here.
+%\end{IEEEbiographynophoto}
+
+% You can push biographies down or up by placing
+% a \vfill before or after them. The appropriate
+% use of \vfill depends on what kind of text is
+% on the last page and whether or not the columns
+% are being equalized.
+
+%\vfill
+
+% Can be used to pull up biographies so that the bottom of the last one
+% is flush with the other column.
+%\enlargethispage{-5in}
+
+
+
+% that's all folks
+\end{document}
+
+

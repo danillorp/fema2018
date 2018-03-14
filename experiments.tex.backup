@@ -1,0 +1,155 @@
+\section{Experiments}
+\label{s.methodology}
+
+In this section, we present the methodology and the experiments used to asses the robustness and efficiency of FEMa against 10 other classifiers version: (i) ANN trained with Backpropation, (ii) Bayes, (iii) EPNN, (iv) OPF, (v) $k$-NN ($k$-nearest neighbors), \textcolor{blue}{(vi) SVM-RBF, (vii) SVM-Sigmoid, (viii) DecisionTree with 5 depth level (DT5), (ix) DecisionTree with 10 depth level (DT10), and (x) Random Forest (RF).} Such approaches were selected for comparison purposes since they have been commonly applied in a number of classification tasks in the literature, being some of them referred as state-of-the-art by the machine learning community.
+
+In order to validate the experiments, we employed $23$ public benchmarking datasets\footnote{\url{http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets}} that have been frequently used for the evaluation of supervised classification methods. We divided the dataset into two groups: (i) small datasets and (ii) medium-to-large datasets. Tables~\ref{tab.datasets1} and~\ref{tab.datasets2} present the main characteristics of the datasets concerning the small and the medium-to-large group, respectively. The datasets were selected in order to represent distinct scenarios, which comprise datasets with different number of features, sizes and classes. 
+
+\begin{table}[!htb]		    
+\begin{center}
+\caption{\label{tab.datasets1}Information about the small datasets used in the experiments.}
+\small
+\begin{tabular}{  l | c | c | c }
+    \textbf{Dataset}   & \textbf{\# samples} & \textbf{\# features}  & \textbf{\# classes}\\ \hline \hline
+    australian        &      690           &       14             &    2 \\
+    boat              &      100           &       2              &    3 \\
+    breast            &      683           &       10             &    2 \\      
+    cone-torus       &      400           &       2              &    3 \\
+    data1             &      1,423          &       2              &    2 \\
+    data2             &      283           &       2              &    2 \\
+    data3             &      340           &       2              &    5 \\
+    data4             &      698           &       2              &    3 \\
+    data5             &      1,850          &       2              &    2 \\
+    diabetes          &      768           &       8              &    2 \\
+    fourclass         &      862           &       2              &    2 \\
+    glass             &	 214	       &       9              &    6 \\ 		        
+    heart             &      270           &       13             &    2 \\   
+    petals            &      100           &       2              &    4 \\  
+    saturn            &      200           &       2              &    2 \\
+    segment           &      2,310          &       19             &    7 \\			
+    vehicle           &      846           &       18             &    4 \\ 
+    wine              &      178           &       13             &    3 \\ \hline  		 
+\end{tabular}		    	    
+\end{center}		    
+\end{table}
+
+\begin{table}[!htb]		    
+\begin{center}
+\caption{\label{tab.datasets2}Information about the medium-to-large datasets used in the experiments.}
+\small
+\begin{tabular}{  l | c | c | c | c }
+    \textbf{Dataset}   & \textbf{\# training} & \textbf{\# testing} & \textbf{\# features}  & \textbf{\# classes}\\
+    & \textbf{samples} & \textbf{samples} & &\\ \hline \hline
+    a1a                &  1,605                     &     30,956                & 123                & 2               \\  
+    a2a                &  2,265                     &     30,296                & 123                & 2               \\
+    a3a                &  3,185                     &     29,376                & 123                & 2               \\
+    a4a                &  4,781                     &     27,780                & 123                & 2               \\
+    a5a                &  6,414                     &     26,147                & 123                & 2               \\ \hline		        
+\end{tabular}		    	    
+\end{center}		    
+\end{table}
+
+Since the medium-to-large datasets are partitioned into training and testing sets already, we decided to partition the small datasets at random using $50\%$ for training purposes and the remaining $50\%$ for classification. Notice the aforementioned protocol was repeated for both normalized and non-normalized versions of the datasets under $15$ runnings for the computation of mean accuracy and computational load. The idea is to verify the behavior of FEMa under such circumstance. The normalization process is the same adopted by LibOPF~\cite{LibOPF:14}, which is used to implement the OPF classifier:
+
+\begin{equation}
+\hat{f}_i = \frac{(f_i - \tilde{f}_i)}{s_i}, 
+\end{equation}
+where $f_i$, $\tilde{f}_i$ and $s_i$ are, respectively, the $i$-th feature, the average of $f_i$, and the standard deviation of $f_i$ in the dataset. Also, $\hat{f}_i$ stands for the normalized version of $f_i$. In order to compare the classification methods, we computed the mean accuracy and standard deviation for each one. Further, we employed the Wilcoxon signed-rank test~\cite{Wilcoxon:45} with significance of $0.05$ to provide a more robust statistical evaluation. 
+
+Methods that require fine-tuning parameters (i.e. SVM, $k$-NN and EPNN) are optimized differently. In regard to SVM, for Radial Basis Function and Sigmoid kernel, the searching range of parameter $C$ (optimization function) was defined within the interval $[-32, 32]$, while the searching range of parameter $\gamma$ (variance of the Gaussian kernel) was defined within the interval $[0, 32]$. For both parameters we used a step size of $2$. With respect to $k$-NN, we defined the value of $k$ as the best value of an exhaustive search in the range $[1,|{\cal{Z}}_{1}|]$ with step size of $2$ (i.e. the best value of $k$ is the one that maximizes the accuracy over the training set). For the EPNN classifier, the search space of parameter $\sigma$ (variance of the Gaussian function used in the pattern layer) was defined within $[0,1]$ with step size of $0.05$, and the search space for the radius was defined within $[l_d,m_d]$, where $l_d$ and $m_d$ denote the lowest and greatest distance among two samples. The ANN architecture employs $4$ hidden layers with $8$ neurons on each, and the number of epochs and desired error were defined as $70,000$ and $0.0001$, respectively. \textcolor{blue}{For Random Forest we set number of estimators as 10 and the maximum depth as 20.} 
+
+\subsection{Small-sized Datasets}
+\label{ss.small}
+
+\textcolor{blue}{Table~\ref{tab.ACC_1} presents the mean recognition rates using $50\%$ of the datasets for training purposes with feature normalization, where the most accurate results according to the Wilcoxon statistical tool are in bold. One can observe that FEMa obtained the best results in $8$ out of $18$ datasets, being the sole best technique in two situations (i.e. ``data2'' and ``wine''). Additionally, concerning six datasets (``data1'',  ``data3'', ``data4'', ``data5'', ``fourclass'' and ``petals''), FEMa obtained recognition rates quite close to the best ones. The worst performance appears to be in the ``diabetes'' dataset, but the same has happened to all classifiers, except for ANN, which obtained the best results for this dataset so far.}
+
+
+\input{tables/acc_1.tex}
+
+
+\textcolor{blue}{Table~\ref{tab.ACC_0} presents the mean recognition rates with non-normalized features. Once again, FEMa obtained the best results in $11$ out $18$ datasets, being the sole best technique in one situation (i.e. ``wine''). Additionally, concerning ten datasets (``boat'', ``cone'', ``data1'', ``data2'',  ``data3'', ``data4'', ``data5'', ``fourclass'', ``petals'' and ``segment''), FEMa obtained recognition rates quite close to the best ones.}
+
+\input{tables/acc_0.tex}
+
+\input{tables/training_time_0.tex}
+\input{tables/training_time_1.tex}
+
+
+Tables~\ref{tab.TIME_0_TR} and~\ref{tab.TIME_1_TR} present the mean computational load for training purposes considering normalized and non-normalized features. Notice we did not show the results concerning FEMa, since it does not have training step. The most expensive techniques are the ones that require parameter fine-tuning (i.e. $k$-NN, SVM and EPNN), since we considered the time spent on this step to the final training procedure computational load. Our implementation of the Bayesian classifier is considerably fast for training, since it basically consists into finding the maximum arc-weight among training samples to be used as a normalization factor in the exponential function (probability estimates).
+
+\input{tables/testing_time_0.tex}
+\input{tables/testing_time_1.tex}
+
+
+Tables~\ref{tab.TIME_0_TEST} and~\ref{tab.TIME_1_TEST} present the mean computational load concerning the classification time over the small-sized datasets considering normalized and non-normalized features. Clearly, one can observe all techniques are considerably fast, since the datasets do not comprise so many samples. In this experiment, FEMa seems to be the slowest one, but if one considers the whole procedure (i.e. training+classification), FEMa and Bayes are the fastest ones, being FEMa more accurate than Bayes in a larger number of situations.
+
+
+\subsection{Medium-to-large-sized Datasets}
+\label{ss.medium_to_large}
+
+Table~\ref{tab.L_ACC} presents the recognition rates of the medium-to-large datasets used in this work with normalized features, where the best results according to Wilcoxon signed-rank test are in bold. In this case, SVM obtained the best results for all datasets, followed by FEMa, $k$-NN and Bayes. Since the medium-to-sized datasets have a considerable number of samples for training purposes, SVM can benefit from that, since the samples will be mapped to a higher dimensional space for learning the maximum-marge hyperplane. However, its training step is too costly, as showed in Table~\ref{tab.L_TR_TIME}. Actually, except for Bayes and OPF, all other classifiers required a considerable computational load for training, which is prohibitive in real-time learning systems, where the training set dynamics changes over time. In this situation, FEMa seems to be most suitable approach, since it does not require the training step.
+
+
+\begin{table*}[!htb]
+\begin{center}
+\scriptsize
+\caption{Recognition rates concerning the medium-to-large datasets.}
+\label{tab.L_ACC}
+\begin{tabular}{l|lllllllllllll}
+Dataset & ANN     & Bayes   & EPNN    & FEMa    & $k$-NN  & OPF     &      DT  &      RF    &    SVM-RBF   & SVM-Sigmoid  \\ \hline \hline
+a1a     & $81.43$ & $79.32$ & $76.10$ & $81.83$ & $82.58$ & $71.27$ & $72.22$  & $72.18$    & $\mathbf{84.05}$ &  $75.52$\\
+a2a     & $81.84$ & $79.05$ & $76.15$ & $81.69$ & $82.44$ & $71.72$ & $69.51$  & $71.34$    & $\mathbf{84.06}$ &  $76.68$\\
+a3a     & $79.46$ & $79.23$ & $76.08$ & $81.74$ & $82.71$ & $72.53$ & $71.31$  & $72.38$    & $\mathbf{84.45}$ &  $75.87$\\
+a4a     & $81.50$ & $79.58$ & $79.73$ & $81.94$ & $83.02$ & $73.77$ & $72.43$  & $72.46$    &$\mathbf{84.56}$ &  $75.18$\\
+a5a     & $82.05$ & $79.61$ & $79.56$ & $81.99$ & $83.06$ & $73.43$ & $72.57$  & $73.32$    &$\mathbf{84.49}$ &  $75.72$\\ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+
+
+%training
+\begin{table*}[!htb]
+\begin{center}
+\caption{\label{tab.L_TR_TIME}Training time concerning the medium-to-large datasets.}
+\scriptsize
+\begin{tabular}{l||llllllllll}
+Dataset & ANN     & Bayes  & OPF   & EPNN        & $k$-NN       &      DT  &  RF    & SVM-RBF & SVM-Sigmoid  \\ \hline \hline
+a1a& $ 477.41$&   $ 0.44$& $ 1.60$ & $ 7,439.90$ & $ 387.06$    & $5.47$   & $5.82$ & $ 1,130.59$ & $587.96$ \\ 
+a2a& $ 706.92$&   $ 0.97$& $ 2.72$ & $ 17,758.61$& $ 813.43$    & $3.42$   & $5.56$ & $ 2,292.08$ & $1207.18$\\ 
+a3a& $ 964.27$&   $ 1.38$& $ 5.76$ & $ 11,336.21$& $ 2,592.87$  & $5.26$   & $6.04$ & $ 4,557.10$ & $2603.14$\\ 
+a4a& $ 1,449.42$& $ 3.75$& $ 12.68$& $ 45,847.83$& $ 10,470.55$ & $5.99$   & $6.60$ & $ 10,870.21$& $5466.43$\\ 
+a5a& $ 1,926.00$& $ 6.71$& $ 24.36$& $ 59,763.13$& $ 20,256.74$ & $5.72$   & $6.67$ & $ 21,870.21$& $9307.58$ \\ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+Table~\ref{tab.L_TST_TIME} presents the classification load for all techniques. One can observe ANN as the fastest approach, since it basically needs to forward the input data to the layers computing inner products between the activation values and the weights. However, if one considers the whole computational time (i.e. training+classification), Bayes was the fastest approach followed by FEMa, though the latter being more accurate.
+
+As aforementioned in Section~\ref{ss.complexity}, FEMa uses a $k$-neighborhood to compute the probability function of each test sample to avoid problems with unbalanced datasets. By using $kd$-trees, for instance, we can make FEMa faster by a factor of $\left|{\cal Z}_1\right|/\alpha$, where $\alpha$ is the number of elements of the smallest class.
+
+%testing
+\begin{table*}[!htb]
+\begin{center}
+\caption{\label{tab.L_TST_TIME}Testing time concerning the medium-to-large datasets.}
+\scriptsize
+\begin{tabular}{l||lllllllllll}
+Dataset & ANN   & Bayes     & OPF     & EPNN     & FEMa     & KNN     &      DT  &  RF    & SVM-RBF & SVM-Sigmoid     \\ \hline \hline
+a1a& $ 0.05$    & $ 42.21$  & $ 16.46$& $ 41.37$ & $ 89.22$ & $ 20.01$& $0.06$   & $0.13$ & $ 25.82$& $21.51$  \\ 
+a2a& $ 0.06$    & $ 58.15$  & $ 24.12$& $ 55.34$ & $ 103.46$& $ 30.42$& $0.26$   & $0.12$ & $ 41.38$& $28.99$ \\ 
+a3a& $ 0.06$    & $ 76.48$  & $ 35.02$& $ 74.25$ & $ 150.07$& $ 42.36$& $0.22$   & $0.81$ &$ 48.44$ & $38.45$\\ 
+a4a& $ 0.09$    & $ 108.04$ & $ 47.92$& $ 128.91$& $ 168.16$& $ 60.81$& $0.37$   & $0.73$ &$ 69.12$ & $55.08$\\ 
+a5a& $ 0.05$    & $ 140.97$ & $ 58.49$& $ 207.23$& $ 239.13$& $ 92.74$& $0.34$   & $0.85$ & $108.98$& $64.89$\\ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+\subsection{Discussion}
+\label{ss.discussion}
+
+The proposed FEMa classifier was compared against six other supervised pattern recognition techniques in two distinct scenarios: small and medium-to-large datasets. Also, with respect to the former situation, we also considered normalized and non-normalized datasets.
+
+From both results, we can observe that FEMa has been placed in the top two first positions for almost all datasets, and it seems to not be affected by non-normalized features. Since FEMa does not require a training step, it has been placed as the second fastest approach (i.e. training+classification), just behind the Bayesian classifier, which has a very fast and simple training phase either. While FEMa has obtained the best results in $9$ datasets (Table~\ref{tab.ACC_50_0}), Bayes achieved the most accurate results in $6$ situations, being the sole best technique in only one dataset (FEMa obtained the best results solely in $3$ datasets).
+
+Another interesting point about FEMa concerns its possibility to be extended, since the reader can evaluate other basis functions to interpolate the probabilistic manifold, as well as we can try to make FEMa even faster by means of $kd$-trees, which are often used to speed up the $k$-nearest neighbours classifier. Therefore, we believe a framework to the development of pattern recognition techniques based on Finite Element Method has been proposed, instead of a single supervised classifier only. Since this version is parameterless, it becomes easier to use and less prone to errors, besides being a deterministic classifier.

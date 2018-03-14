@@ -1,0 +1,348 @@
+\section{Experiments}
+\label{s.methodology}
+
+In this section, we present the methodology and the experiments used to asses the robustness and efficiency of FEMa against 10 other classifiers version: (i) ANN trained with Backpropation, (ii) Bayes, (iii) EPNN, (iv) OPF, (v) $k$-NN ($k$-nearest neighbors), \textcolor{blue}{(vi) SVM-RBF, (vii) SVM-Sigmoid, (viii) DecisionTree with 5 depth level (DT5), (ix) DecisionTree with 10 depth level (DT10), and (x) Random Forest (RF).} Such approaches were selected for comparison purposes since they have been commonly applied in a number of classification tasks in the literature, being some of them referred as state-of-the-art by the machine learning community.
+
+In order to validate the experiments, we employed $23$ public benchmarking datasets\footnote{\url{http://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets}} that have been frequently used for the evaluation of supervised classification methods. We divided the dataset into two groups: (i) small datasets and (ii) medium-to-large datasets. Tables~\ref{tab.datasets1} and~\ref{tab.datasets2} present the main characteristics of the datasets concerning the small and the medium-to-large group, respectively. The datasets were selected in order to represent distinct scenarios, which comprise datasets with different number of features, sizes and classes. 
+
+\begin{table}[!htb]		    
+\begin{center}
+\caption{\label{tab.datasets1}Information about the small datasets used in the experiments.}
+\small
+\begin{tabular}{  l | c | c | c }
+    \textbf{Dataset}   & \textbf{\# samples} & \textbf{\# features}  & \textbf{\# classes}\\ \hline \hline
+    australian        &      690           &       14             &    2 \\
+    boat              &      100           &       2              &    3 \\
+    breast            &      683           &       10             &    2 \\      
+    cone-torus       &      400           &       2              &    3 \\
+    data1             &      1,423          &       2              &    2 \\
+    data2             &      283           &       2              &    2 \\
+    data3             &      340           &       2              &    5 \\
+    data4             &      698           &       2              &    3 \\
+    data5             &      1,850          &       2              &    2 \\
+    diabetes          &      768           &       8              &    2 \\
+    fourclass         &      862           &       2              &    2 \\
+    glass             &	 214	       &       9              &    6 \\ 		        
+    heart             &      270           &       13             &    2 \\   
+    petals            &      100           &       2              &    4 \\  
+    saturn            &      200           &       2              &    2 \\
+    segment           &      2,310          &       19             &    7 \\			
+    vehicle           &      846           &       18             &    4 \\ 
+    wine              &      178           &       13             &    3 \\ \hline  		 
+\end{tabular}		    	    
+\end{center}		    
+\end{table}
+
+\begin{table}[!htb]		    
+\begin{center}
+\caption{\label{tab.datasets2}Information about the medium-to-large datasets used in the experiments.}
+\small
+\begin{tabular}{  l | c | c | c | c }
+    \textbf{Dataset}   & \textbf{\# training} & \textbf{\# testing} & \textbf{\# features}  & \textbf{\# classes}\\
+    & \textbf{samples} & \textbf{samples} & &\\ \hline \hline
+    a1a                &  1,605                     &     30,956                & 123                & 2               \\  
+    a2a                &  2,265                     &     30,296                & 123                & 2               \\
+    a3a                &  3,185                     &     29,376                & 123                & 2               \\
+    a4a                &  4,781                     &     27,780                & 123                & 2               \\
+    a5a                &  6,414                     &     26,147                & 123                & 2               \\ \hline		        
+\end{tabular}		    	    
+\end{center}		    
+\end{table}
+
+Since the medium-to-large datasets are partitioned into training and testing sets already, we decided to partition the small datasets at random using $50\%$ for training purposes and the remaining $50\%$ for classification. Notice the aforementioned protocol was repeated for both normalized and non-normalized versions of the datasets under $15$ runnings for the computation of mean accuracy and computational load. The idea is to verify the behavior of FEMa under such circumstance. The normalization process is the same adopted by LibOPF~\cite{LibOPF:14}, which is used to implement the OPF classifier:
+
+\begin{equation}
+\hat{f}_i = \frac{(f_i - \tilde{f}_i)}{s_i}, 
+\end{equation}
+where $f_i$, $\tilde{f}_i$ and $s_i$ are, respectively, the $i$-th feature, the average of $f_i$, and the standard deviation of $f_i$ in the dataset. Also, $\hat{f}_i$ stands for the normalized version of $f_i$. In order to compare the classification methods, we computed the mean accuracy and standard deviation for each one. Further, we employed the Wilcoxon signed-rank test~\cite{Wilcoxon:45} with significance of $0.05$ to provide a more robust statistical evaluation. 
+
+Methods that require fine-tuning parameters (i.e. SVM, $k$-NN and EPNN) are optimized differently. In regard to SVM, for Radial Basis Function and Sigmoid kernel, the searching range of parameter $C$ (optimization function) was defined within the interval $[-32, 32]$, while the searching range of parameter $\gamma$ (variance of the Gaussian kernel) was defined within the interval $[0, 32]$. For both parameters we used a step size of $2$. With respect to $k$-NN, we defined the value of $k$ as the best value of an exhaustive search in the range $[1,|{\cal{Z}}_{1}|]$ with step size of $2$ (i.e. the best value of $k$ is the one that maximizes the accuracy over the training set). For the EPNN classifier, the search space of parameter $\sigma$ (variance of the Gaussian function used in the pattern layer) was defined within $[0,1]$ with step size of $0.05$, and the search space for the radius was defined within $[l_d,m_d]$, where $l_d$ and $m_d$ denote the lowest and greatest distance among two samples. The ANN architecture employs $4$ hidden layers with $8$ neurons on each, and the number of epochs and desired error were defined as $70,000$ and $0.0001$, respectively. \textcolor{blue}{For Random Forest we set number of estimators as 10 and the maximum depth as 20.} 
+
+\subsection{Small-sized Datasets}
+\label{ss.small}
+
+
+Table~\ref{tab.ACC_50_1} presents the mean recognition rates using $50\%$ of the datasets for training purposes without feature normalization, where the most accurate results according to the Wilcoxon statistical tool are in bold. One can observe that FEMa obtained the best results in $9$ out of $18$ datasets, being the sole best technique in three situations (i.e. ``breast", ``data2"\ and ``data3"). Additionally, concerning five other datasets (``cone-torus", ``diabetes", ``glass", ``segment"\ and ``wine"), FEMa obtained recognition rates quite close to the best ones. The worst performance appears to be in the ``vehicle"\ dataset, but the same has happened to all classifiers, except for SVM, which obtained the best results for this dataset so far.
+
+%\begin{table*}[!htb]
+%\scriptsize
+%\centering
+%\label{tab.ACC_50_1}
+%\caption{Mean classification rates using 50\% of the samples for training with normalized features.}
+%\begin{tabular}{l ||l | l | l | l | l | l| l}
+%Dataset           & ANN               & Bayes               & OPF               & FEMa              & $k$-NN               & SVM & EPNN \\ \hline \hline
+%australian& $ 80.71 \pm 2.67$& $ 78.62 \pm 1.25$& $ 77.71 \pm 1.71$& $ 81.61 \pm 1.46$& $ \mathbf{84.54 \pm 1.06}$& $ \mathbf{85.46 \pm 1.02}$& $ \mathbf{85.08 \pm 2.96}$\\ 
+%boat& $ 79.41 \pm 7.40$& $ 96.08 \pm 2.59$& $ 95.83 \pm 2.67$& $ 95.59 \pm 1.90$& $ 96.08 \pm 2.59$& $ \mathbf{99.02 \pm 1.96}$& $ 95.29 \pm 2.35$ \\ 
+%breast& $ 96.77 \pm 0.96$& $ 95.30 \pm 1.13$& $ 94.99 \pm 1.28$& $ \mathbf{97.08 \pm 0.27}$& $ 96.85 \pm 0.44$& $ 90.06 \pm 0.61$ & $ 90.06 \pm 0.61$ \\ 
+%cone-torus& $ 62.32 \pm 4.52$& $ 82.25 \pm 1.56$& $ 81.66 \pm 1.39$& $ 82.26 \pm 1.79$& $ 82.26 \pm 2.55$& $ \mathbf{82.65 \pm 4.01}$& $ \mathbf{81.19 \pm 2.05}$ \\  
+%data1& $ 98.97 \pm 0.25$& $ 99.45 \pm 0.25$& $ 99.40 \pm 0.21$& $\mathbf{ 99.59 \pm 0.18}$& $ \mathbf{99.53 \pm 0.18}$& $ 99.35 \pm 0.24$& $ 99.35 \pm 0.24$ \\ 
+%data2& $ 98.16 \pm 0.49$& $ 98.35 \pm 0.85$& $ 98.07 \pm 0.68$& $ \mathbf{98.62 \pm 0.72}$& $ 98.50 \pm 0.91$& $ 98.50 \pm 0.76$& $ \mathbf{98.03 \pm 0.82}$ \\
+%data3& $ 91.08 \pm 8.81$& $ 98.83 \pm 1.01$& $ 98.55 \pm 1.29$& $ \mathbf{99.29 \pm 0.58}$& $ 98.74 \pm 1.00$& $ 99.09 \pm 0.85$& $ 90.06 \pm 2.09$ \\ 
+%data4& $ 99.50 \pm 0.79$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$ \\ 
+%data5& $ 99.40 \pm 1.03$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$ \\ 
+%diabetes& $ \mathbf{71.78 \pm 1.42}$& $ 68.17 \pm 1.79$& $ 66.92 \pm 1.61$& $ 68.47 \pm 1.86$& $ 66.64 \pm 1.34$& $ 70.30 \pm 1.11$& $ 65.68 \pm 0.45$ \\
+%fourclass& $ 74.68 \pm 9.85$& $ \mathbf{99.90 \pm 0.14}$& $ 99.45 \pm 0.32$& $ \mathbf{99.90 \pm 0.14}$& $ \mathbf{99.94 \pm 0.12}$& $ \mathbf{99.91 \pm 0.13}$& $ \mathbf{99.75 \pm 0.65}$ \\ 
+%glass& $ 34.79 \pm 12.25$& $ \mathbf{63.08 \pm 5.59}$& $ 62.65 \pm 5.31$& $ 61.76 \pm 6.18$& $ 58.57 \pm 9.66$& $ 58.45 \pm 6.21$ & $ 62.49 \pm 1.87$ \\ 
+%heart& $ 77.60 \pm 3.63$& $ 74.52 \pm 2.93$& $ 73.02 \pm 3.92$& $ 79.73 \pm 2.14$& $ \mathbf{82.38 \pm 2.20}$& $ \mathbf{82.44 \pm 2.01}$& $ 75.26 \pm 3.30$ \\ 
+%ionosphere& $ 86.76 \pm 3.25$& $ 80.45 \pm 2.40$& $ 80.06 \pm 2.45$& $ 60.83 \pm 1.58$& $ 77.97 \pm 2.90$& $ 93.51 \pm 2.56$& $ 66.93 \pm 0.23$ \\  
+%petals& $ 99.04 \pm 1.36$& $ \mathbf{99.28 \pm 0.93}$& $ \mathbf{99.28 \pm 0.93}$& $ \mathbf{99.28 \pm 0.93}$& $ \mathbf{99.28 \pm 0.93}$& $ 98.56 \pm 1.86$& $ 99.03 \pm 0.94$ \\  
+%saturn& $ 58.88 \pm 4.14$& $ \mathbf{87.88 \pm 3.06}$& $ 87.50 \pm 2.69$& $ \mathbf{87.85 \pm 3.11}$& $ \mathbf{87.88 \pm 3.06}$& $ 87.50 \pm 3.28$& $ \mathbf{87.80 \pm 3.31}$ \\ 
+%segment& $ 48.29 \pm 10.79$& $ 95.16 \pm 0.69$& $ 94.84 \pm 0.60$& $ 95.03 \pm 0.56$& $ 95.16 \pm 0.69$& $ \mathbf{95.98 \pm 0.78}$& $ \mathbf{95.48 \pm 0.24}$ \\
+%vehicle& $ 50.16 \pm 9.50$& $ 68.37 \pm 1.17$& $ 67.30 \pm 1.10$& $ 70.00 \pm 1.33$& $ 68.18 \pm 1.88$& $ \mathbf{81.81 \pm 1.29}$& $ 69.29 \pm 1.10$ \\ 
+%wine& $ 94.81 \pm 2.79$& $ 95.66 \pm 1.48$& $ 94.85 \pm 1.21$& $ 97.57 \pm 1.13$& $ 96.76 \pm 2.35$& $ \mathbf{98.53 \pm 0.92}$& $ 93.56 \pm 2.67$ \\
+ %\hline
+%\end{tabular}
+%\end{table*}
+
+% \begin{table*}[!htb]
+% \scriptsize
+% \centering
+% \label{tab.ACC_50_1}
+% \caption{Mean classification rates using 50\% of the samples for training with normalized features.}
+% \begin{tabular}{l ||l | l | l | l | l | l| l}
+% Dataset           & ANN               & Bayes               & OPF               & FEMa              & $k$-NN               & SVM & EPNN \\ \hline \hline
+% australian& $ 80.71 \pm 2.67$& $ 78.62 \pm 1.25$& $ 77.71 \pm 1.71$& $ 81.61 \pm 1.46$& $ \mathbf{84.54 \pm 1.06}$& $ \mathbf{85.46 \pm 1.02}$& $ 79.08 \pm 2.96$\\ 
+% boat& $ 79.41 \pm 7.40$& $ 96.08 \pm 2.59$& $ 95.83 \pm 2.67$& $ 95.59 \pm 1.90$& $ 96.08 \pm 2.59$& $ \mathbf{99.02 \pm 1.96}$& $ 95.29 \pm 2.35$ \\ 
+% breast& $ 96.77 \pm 0.96$& $ 95.30 \pm 1.13$& $ 94.99 \pm 1.28$& $ \mathbf{97.08 \pm 0.27}$& $ 96.85 \pm 0.44$& $ 90.06 \pm 0.61$ & $ 90.06 \pm 0.61$ \\ 
+% cone-torus& $ 62.32 \pm 4.52$& $ 82.25 \pm 1.56$& $ 81.66 \pm 1.39$& $ 82.26 \pm 1.79$& $ 82.26 \pm 2.55$& $ \mathbf{82.65 \pm 4.01}$& $ 81.19 \pm 2.05$ \\  
+% data1& $ 98.97 \pm 0.25$& $ 99.45 \pm 0.25$& $ 99.40 \pm 0.21$& $\mathbf{ 99.59 \pm 0.18}$& $ \mathbf{99.53 \pm 0.18}$& $ 99.35 \pm 0.24$& $ 99.35 \pm 0.24$ \\ 
+% data2& $ 98.16 \pm 0.49$& $ 98.35 \pm 0.85$& $ 98.07 \pm 0.68$& $ \mathbf{98.62 \pm 0.72}$& $ 98.50 \pm 0.91$& $ 98.50 \pm 0.76$& $ 98.03 \pm 0.82$ \\
+% data3& $ 91.08 \pm 8.81$& $ 98.83 \pm 1.01$& $ 98.55 \pm 1.29$& $ \mathbf{99.29 \pm 0.58}$& $ 98.74 \pm 1.00$& $ 99.09 \pm 0.85$& $ 90.06 \pm 2.09$ \\ 
+% data4& $ 99.50 \pm 0.79$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ 99.89 \pm 0.14$ \\ 
+% data5& $ 99.40 \pm 1.03$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ 97.73 \pm 0.00$ \\ 
+% diabetes& $ \mathbf{71.78 \pm 1.42}$& $ 68.17 \pm 1.79$& $ 66.92 \pm 1.61$& $ 68.47 \pm 1.86$& $ 66.64 \pm 1.34$& $ 70.30 \pm 1.11$& $ 65.68 \pm 0.45$ \\
+% fourclass& $ 74.68 \pm 9.85$& $ \mathbf{99.90 \pm 0.14}$& $ 99.45 \pm 0.32$& $ \mathbf{99.90 \pm 0.14}$& $ \mathbf{99.94 \pm 0.12}$& $ \mathbf{99.91 \pm 0.13}$& $ 98.75 \pm 0.65$ \\ 
+% glass& $ 34.79 \pm 12.25$& $ \mathbf{63.08 \pm 5.59}$& $ 62.65 \pm 5.31$& $ 61.76 \pm 6.18$& $ 58.57 \pm 9.66$& $ 58.45 \pm 6.21$ & $ 62.49 \pm 1.87$ \\ 
+% heart& $ 77.60 \pm 3.63$& $ 74.52 \pm 2.93$& $ 73.02 \pm 3.92$& $ 79.73 \pm 2.14$& $ \mathbf{82.38 \pm 2.20}$& $ \mathbf{82.44 \pm 2.01}$& $ 75.26 \pm 3.30$ \\ 
+% ionosphere& $ 86.76 \pm 3.25$& $ 80.45 \pm 2.40$& $ 80.06 \pm 2.45$& $ 60.83 \pm 1.58$& $ 77.97 \pm 2.90$& $ 93.51 \pm 2.56$& $ 66.93 \pm 0.23$ \\  
+% petals& $ 99.04 \pm 1.36$& $ \mathbf{99.28 \pm 0.93}$& $ \mathbf{99.28 \pm 0.93}$& $ \mathbf{99.28 \pm 0.93}$& $ \mathbf{99.28 \pm 0.93}$& $ 98.56 \pm 1.86$& $ 99.03 \pm 0.94$ \\  
+% saturn& $ 58.88 \pm 4.14$& $ \mathbf{87.88 \pm 3.06}$& $ 87.50 \pm 2.69$& $ \mathbf{87.85 \pm 3.11}$& $ \mathbf{87.88 \pm 3.06}$& $ 87.50 \pm 3.28$& $ 86.80 \pm 3.31$ \\ 
+% segment& $ 48.29 \pm 10.79$& $ 95.16 \pm 0.69$& $ 94.84 \pm 0.60$& $ 95.03 \pm 0.56$& $ 95.16 \pm 0.69$& $ \mathbf{95.98 \pm 0.78}$& $ 95.48 \pm 0.24$ \\
+% vehicle& $ 50.16 \pm 9.50$& $ 68.37 \pm 1.17$& $ 67.30 \pm 1.10$& $ 70.00 \pm 1.33$& $ 68.18 \pm 1.88$& $ \mathbf{81.81 \pm 1.29}$& $ 69.29 \pm 1.10$ \\ 
+% wine& $ 94.81 \pm 2.79$& $ 95.66 \pm 1.48$& $ 94.85 \pm 1.21$& $ 97.57 \pm 1.13$& $ 96.76 \pm 2.35$& $ \mathbf{98.53 \pm 0.92}$& $ 93.56 \pm 2.67$ \\
+%  \hline
+% \end{tabular}
+% \end{table*}
+% 
+% Table~\ref{tab.ACC_50_0} presents the mean recognition rates with non-normalized features. Once again, FEMa obtained the best results in $9$ out $18$ datasets, with recognition rates close to the best ones in three more datasets. Actually, the only situation that seems to be affected by non-normalized features is the ``breast"\ dataset, though all techniques were affected either. In this new experiment, FEMa obtained the sole best result in ``wine"\ dataset only.
+% 
+% \begin{table*}[!htb]
+% \scriptsize
+% \centering
+% \caption{\label{tab.ACC_50_0}Mean classification rates using 50\% of the samples for training with non-normalized features.}
+% \scriptsize
+% \begin{tabular}{l ||l | l | l | l | l | l| l}
+% Dataset           & ANN               & Bayes               & OPF               & FEMa               & $k$-NN               & SVM & EPNN\\ \hline \hline
+% australian& $ 75.61 \pm 7.70$& $ 80.20 \pm 2.06$& $ 79.12 \pm 1.63$& $ 81.85 \pm 1.99$& $ \mathbf{85.53 \pm 1.64}$& $ \mathbf{85.59 \pm 1.52}$& $ 80.21 \pm 0.92$\\ 
+% boat& $ 87.75 \pm 5.94$& $ 95.34 \pm 2.93$& $ 94.61 \pm 3.06$& $ 93.87 \pm 3.97$& $ 95.34 \pm 2.93$& $ \mathbf{100.0 \pm 0.0}$& $ 94.02 \pm 1.88$\\ 
+% breast& $ 50.00 \pm 0.00$& $ \mathbf{56.49 \pm 1.63}$& $ \mathbf{56.55 \pm 1.64}$& $ \mathbf{56.57 \pm 1.59}$& $ 52.95 \pm 2.37$& $ 51.39 \pm 1.08$& $ 54.04 \pm 2.01$\\ 
+% cone-torus& $ 56.85 \pm 23.66$& $ 81.48 \pm 2.87$& $ 81.00 \pm 3.12$& $ 81.55 \pm 3.16$& $ 81.58 \pm 3.66$& $ \mathbf{84.03 \pm 3.26}$& $ 79.98 \pm 1.21$\\ 
+% data1& $ 91.57 \pm 15.78$& $ \mathbf{99.45 \pm 0.28}$& $ 99.33 \pm 0.42$& $ \mathbf{99.45 \pm 0.28}$& $ \mathbf{99.49 \pm 0.28}$& $ 99.22 \pm 0.10$& $ 97.59 \pm 3.85$\\ 
+% data2& $ 96.15 \pm 3.54$& $ 98.40 \pm 0.77$& $ \mathbf{98.65 \pm 0.79}$& $ 98.40 \pm 0.77$& $ 98.38 \pm 0.85$& $ \mathbf{98.65 \pm 0.73}$& $ 97.21 \pm 2.07$\\ 
+% data3& $ 43.88 \pm 22.45$& $ \mathbf{99.55 \pm 0.94}$& $ \mathbf{99.55 \pm 0.94}$& $ \mathbf{99.55 \pm 0.94}$& $ 99.27 \pm 0.87$& $ 99.27 \pm 0.63$& $ 98.55 \pm 0.74$\\ 
+% data4& $ 85.02 \pm 19.50$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ 99.16 \pm 1.01$\\ 
+% data5& $ 73.77 \pm 23.83$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$& $ \mathbf{100.0 \pm 0.0}$\\ 
+% diabetes& $ 63.48 \pm 7.29$& $ 66.03 \pm 1.43$& $ 64.92 \pm 1.52$& $ 67.05 \pm 1.94$& $ 66.76 \pm 2.61$& $ \mathbf{71.13 \pm 2.39}$& $ 68.17 \pm 0.87$\\ 
+% fourclass& $ 80.19 \pm 11.34$& $ \mathbf{99.92 \pm 0.14}$& $ 99.79 \pm 0.18$& $ \mathbf{99.92 \pm 0.14}$& $ \mathbf{99.90 \pm 0.19}$& $ \mathbf{99.91 \pm 0.13}$& $ 89.99 \pm 10.02$\\ 
+% glass& $ 32.67 \pm 3.92$& $ 62.68 \pm 5.07$& $ 62.68 \pm 5.00$& $ 61.73 \pm 4.85$& $ 52.47 \pm 10.95$& $ \mathbf{63.79 \pm 4.62}$& $ 62.98 \pm 1.08$\\ 
+% heart& $ 74.27 \pm 4.08$& $ 75.19 \pm 3.00$& $ 75.21 \pm 2.62$& $ 77.92 \pm 2.30$& $ \mathbf{82.04 \pm 1.97}$& $ \mathbf{82.12 \pm 1.95}$ & $ 80.74 \pm 1.22$\\
+% %ionosphere& $ 82.26 \pm 6.15$& $ 81.43 \pm 2.75$& $ 81.28 \pm 2.79$& $ 62.71 \pm 1.85$& $ 80.45 \pm 2.12$& $ 93.36 \pm 2.30$& $ 80.98 \pm 1.87$\\ 
+% petals& $ 98.80 \pm 1.91$& $ \mathbf{99.52 \pm 1.27}$& $ \mathbf{99.52 \pm 1.27}$& $ \mathbf{99.52 \pm 1.27}$& $ \mathbf{99.52 \pm 1.27}$& $ 99.04 \pm 0.96$& $ 98.94 \pm 0.62$\\ 
+% saturn& $ 64.38 \pm 11.38$& $ \mathbf{89.62 \pm 6.08}$& $ \mathbf{89.50 \pm 6.16}$& $ \mathbf{89.68 \pm 6.03}$& $ \mathbf{89.62 \pm 6.08}$& $ \mathbf{89.50 \pm 6.42}$& $ 85.28 \pm 3.39$\\
+% segment& $ 44.09 \pm 14.78$& $ 95.43 \pm 0.70$& $ 95.11 \pm 0.73$& $ 95.60 \pm 0.58$& $ 95.43 \pm 0.70$& $ \mathbf{96.09 \pm 0.60}$& $ 68.92 \pm 3.05$\\ 
+% vehicle& $ 53.28 \pm 9.48$& $ 68.28 \pm 1.65$& $ 67.45 \pm 1.46$& $ 68.81 \pm 1.51$& $ 68.66 \pm 2.17$& $ \mathbf{82.71 \pm 1.30}$& $ 63.33 \pm 1.35$\\ 
+% wine& $ 93.06 \pm 5.41$& $ 96.04 \pm 1.34$& $ 94.94 \pm 1.80$& $ \mathbf{98.09 \pm 0.22}$& $ 97.43 \pm 1.34$& $ 96.17 \pm 1.23$& $ 95.28 \pm 2.06$\\ 
+% \hline
+% \end{tabular}
+% \end{table*}
+% 
+% Table~\ref{tab.TR_TIME_50_1} presents the mean computational load for training purposes. Notice we did not show the results concerning FEMa, since it does not have training step. The most expensive techniques are the ones that require parameter fine-tuning (i.e. $k$-NN, SVM and EPNN), since we considered the time spent on this step to the final training procedure computational load. Our implementation of the Bayesian classifier is considerably fast for training, since it basically consists into finding the maximum arc-weight among training samples to be used as a normalization factor in the exponential function (probability estimates).
+% 
+%TRAINING 0.5 1
+% \begin{table*}[!htb]
+% \centering
+% \caption{\label{tab.TR_TIME_50_1}Mean training time using 50\% of the samples for training with normalized features.}
+% \scriptsize
+% \begin{tabular}{l||l|l|l|l|l|l}
+% Dataset & ANN   & Bayes  & OPF   & $k$-NN   & SVM & EPNN    \\ \hline \hline
+% australian& $ 12.61 \pm 9.63$& $ 0.00 \pm 0.00$& $ 2.61 \pm 0.12$& $ 0.18 \pm 0.01$& $ 11.01 \pm 1.32$ & $ 15.22 \pm 3.11$\\
+% boat& $ 1.14 \pm 1.36$& $ 0.00 \pm 0.00$& $ 0.14 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.60 \pm 0.03$ & $ 2.10 \pm 0.14$ \\ 
+% breast& $ 18.40 \pm 0.19$& $ 0.00 \pm 0.00$& $ 0.97 \pm 0.01$& $ 0.18 \pm 0.00$& $ 3.87 \pm 0.20$ & $ 47.55 \pm 8.43$ \\ 
+% cone-torus& $ 11.05 \pm 0.10$& $ 0.00 \pm 0.00$& $ 1.02 \pm 0.10$& $ 0.02 \pm 0.00$& $ 4.76 \pm 0.59$ & $ 3.13 \pm 0.88$ \\ 
+% data1& $ 3.12 \pm 3.79$& $ 0.00 \pm 0.00$& $ 2.21 \pm 0.07$& $ 1.47 \pm 0.03$& $ 8.26 \pm 0.20$ & $ 3.81 \pm 0.29$ \\  
+% data2& $ 0.17 \pm 0.26$& $ 0.00 \pm 0.00$& $ 0.19 \pm 0.01$& $ 0.00 \pm 0.00$& $ 0.82 \pm 0.02$ & $ 0.15 \pm 0.02$ \\ 
+% data3& $ 6.60 \pm 5.21$& $ 0.00 \pm 0.00$& $ 0.28 \pm 0.00$& $ 0.01 \pm 0.00$& $ 1.21 \pm 0.02$ & $ 1.68 \pm 0.29$ \\ 
+% data4& $ 3.94 \pm 7.61$& $ 0.00 \pm 0.00$& $ 0.41 \pm 0.01$& $ 0.09 \pm 0.02$& $ 2.12 \pm 0.02$ & $ 4.03 \pm 0.97$ \\  
+% data5& $ 0.16 \pm 0.01$& $ 0.00 \pm 0.00$& $ 1.21 \pm 0.02$ & $ 5.06 \pm 0.21$& $ 5.54 \pm 0.08$ & $ 0.86 \pm 0.33$ \\ 
+% diabetes& $ 21.14 \pm 0.31$& $ 0.00 \pm 0.00$& $ 6.29 \pm 0.21$& $ 0.11 \pm 0.01$& $ 26.52 \pm 2.52$  & $ 11.22 \pm 1.08$ \\
+% fourclass& $ 17.46 \pm 8.52$& $ 0.00 \pm 0.00$& $ 2.88 \pm 0.09$& $ 0.31 \pm 0.02$& $ 9.68 \pm 0.24$ & $ 13.22 \pm 4.51$ \\ 
+% glass& $ 8.29 \pm 0.07$& $ 0.00 \pm 0.00$& $ 0.27 \pm 0.00$& $ 0.00 \pm 0.00$& $ 1.97 \pm 0.08$ & $ 1.32 \pm 0.11$ \\ 
+% heart& $ 3.23 \pm 3.84$& $ 0.00 \pm 0.00$& $ 0.45 \pm 0.04$& $ 0.01 \pm 0.00$& $ 2.05 \pm 0.14$ & $ 4.02 \pm 0.21$ \\ 
+% %ionosphere& $ 5.75 \pm 6.73$& $ 0.00 \pm 0.00$& $ 0.76 \pm 0.02$& $ 0.00 \pm 0.00$& $ 3.25 \pm 0.09$ 
+% petals& $ 0.01 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.18 \pm 0.02$& $ 0.00 \pm 0.00$& $ 0.59 \pm 0.04$ & $ 0.11 \pm 0.01$ \\ 
+% saturn& $ 5.18 \pm 0.10$& $ 0.00 \pm 0.00$& $ 0.49 \pm 0.02$& $ 0.00 \pm 0.00$& $ 2.09 \pm 0.19$ & $ 0.89 \pm 0.07$ \\ 
+% segment& $ 110.61 \pm 4.29$& $ 0.03 \pm 0.00$& $ 19.98 \pm 0.22$& $ 17.93 \pm 0.79$& $ 91.64 \pm 3.76$ & $ 298.13 \pm 42.25$ \\
+% vehicle& $ 32.39 \pm 0.62$& $ 0.00 \pm 0.00$& $ 5.96 \pm 0.07$& $ 0.52 \pm 0.04$& $ 20.72 \pm 0.22$ & $ 21.24 \pm 2.14$ \\
+% wine& $ 0.02 \pm 0.01$& $ 0.00 \pm 0.00$& $ 0.20 \pm 0.00$ & $ 0.00 \pm 0.00$& $ 0.99 \pm 0.02$ & $ 0.09 \pm 0.04$ \\ \hline
+% \end{tabular}
+% \end{table*}
+
+
+% Table~\ref{tab.TST_TIME_50_1} presents the mean computational load concerning the classification time over the small-sized datasets. Clearly, one can observe all techniques are considerably fast, since the datasets do not comprise so many samples. In this experiment, FEMa seems to be the slowest one, but if one considers the whole procedure (i.e. training+classification), FEMa and Bayes are the fastest ones, being FEMa more accurate than Bayes in a larger number of situations.
+
+%TESTING 0.5 1
+% \begin{table*}[!htb]
+% \centering
+% \caption{\label{tab.TST_TIME_50_1}Mean testing time.}
+% \scriptsize
+% \begin{tabular}{l||l|l|l|l|l|l|l}
+% Dataset & ANN   & Bayes  & OPF & EPNN & FEMa & KNN &   SVM     \\ \hline \hline
+% australian& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.02 \pm 0.00$& $ 0.15 \pm 0.01$&$ 0.01 \pm 0.00$	& $ 0.01 \pm 0.00$ \\ 
+% boat& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$	    &$ 0.01 \pm 0.00$	& $ 0.00 \pm 0.00$ \\ 
+% breast& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.09 \pm 0.00$    &$ 0.01 \pm 0.00$	& $ 0.02 \pm 0.00$ \\ 
+% cone-torus& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.03 \pm 0.00$      &$ 0.02 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+% data1& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.02 \pm 0.00$& $ 0.03 \pm 0.00$& $ 0.28 \pm 0.00$     &$ 0.06 \pm 0.01$ 	&$ 0.01 \pm 0.00$ \\ 
+% data2& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$     &$ 0.00 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+% data3& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$     &$ 0.00 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+% data4& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.08 \pm 0.01$     &$ 0.04 \pm 0.00$ 	&$ 0.01 \pm 0.00$ \\ 
+% data5& $ 0.00 \pm 0.00$& $ 0.02 \pm 0.00$& $ 0.03 \pm 0.00$& $ 0.04 \pm 0.00$& $ 0.17 \pm 0.00$     &$ 0.09 \pm 0.01$ 	&$ 0.02 \pm 0.00$ \\ 
+% diabetes& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.12 \pm 0.02$  &$ 0.01 \pm 0.00$ 	&$ 0.01 \pm 0.00$ \\ 
+% fourclass& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.10 \pm 0.00$ &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+% glass& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$     &$ 0.01 \pm 0.00$ 	&$ 0.01 \pm 0.00$ \\ 
+% heart& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.02 \pm 0.00$     &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+% petals& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$    &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+% saturn& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$    &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+% segment& $ 0.00 \pm 0.00$& $ 0.26 \pm 0.00$& $ 0.07 \pm 0.00$& $ 0.21 \pm 0.00$& $ 4.53 \pm 0.38$   &$ 0.14 \pm 0.02$ 	&$ 0.08 \pm 0.01$ \\ 
+% vehicle& $ 0.00 \pm 0.00$& $ 0.02 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.03 \pm 0.00$& $ 0.38 \pm 0.03$   &$ 0.03 \pm 0.00$ 	&$ 0.05 \pm 0.03$ \\ 
+% wine& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$      &$ 0.00 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ \hline
+% \end{tabular}
+% \end{table*}
+
+\subsection{Medium-to-large-sized Datasets}
+\label{ss.medium_to_large}
+
+Table~\ref{tab.L_ACC} presents the recognition rates of the medium-to-large datasets used in this work with normalized features, where the best results according to Wilcoxon signed-rank test are in bold. In this case, SVM obtained the best results for all datasets, followed by FEMa, $k$-NN and Bayes. Since the medium-to-sized datasets have a considerable number of samples for training purposes, SVM can benefit from that, since the samples will be mapped to a higher dimensional space for learning the maximum-marge hyperplane. However, its training step is too costly, as showed in Table~\ref{tab.L_TR_TIME}. Actually, except for Bayes and OPF, all other classifiers required a considerable computational load for training, which is prohibitive in real-time learning systems, where the training set dynamics changes over time. In this situation, FEMa seems to be most suitable approach, since it does not require the training step.
+
+%TRAINIG 0.5 0
+%\begin{table*}[]
+%\centering
+%\label{tab.TR_TIME_50_0}
+%\caption{Mean training time using 50\% of the samples for training with features non-normalized.}
+%\scriptsize
+%\begin{tabular}{l||l|l|l|l|l|l}
+%Dataset & ANN   & Bayes  & OPF   & KNN   & SVM  & EPNN   \\ %\hline \hline
+%australian& $ 18.60 \pm 7.82$& $ 0.00 \pm 0.00$& $ 3.21 \pm 0.90$& $ 0.24 \pm 0.00$& $ 9.19 \pm 1.06$ & $ 17.71 \pm 5.42$\\ 
+%boat& $ 0.39 \pm 0.02$& $ 0.00 \pm 0.00$&  $ 0.19 \pm 0.01$ &$ 0.00 \pm 0.00$& $ 0.59 \pm 0.03$ & $ 0.21 \pm 0.60$ \\ 
+%breast& $ 19.09 \pm 0.24$& $ 0.00 \pm 0.00$& $ 1.91 \pm 0.01$&$ 0.20 \pm 0.01$& $ 7.94 \pm 0.09$ & $ 49.16 \pm 11.44$ \\ 
+%cone& $ 12.24 \pm 0.77$& $ 0.00 \pm 0.00$& $ 1.02 \pm 0.02$& $ 0.03 \pm 0.04$& $ 3.71 \pm 0.35$ & $ 3.54 \pm 1.08$ \\
+%data1& $ 36.78 \pm 0.53$& $ 0.00 \pm 0.00$& $ 4.66 \pm 0.3$& $ 2.47 \pm 0.04$& $ 16.45 \pm 0.15$ & $ 31.83 \pm 8.82$ \\ 
+%data2& $ 7.20 \pm 0.19$& $ 0.00 \pm 0.00$& $ 0.23 \pm 0.01$& $ 0.01 \pm 0.00$& $ 1.10 \pm 0.03$ & $ 1.15 \pm 0.29$ \\
+%data3& $ 11.26 \pm 0.13$& $ 0.00 \pm 0.00$& $ 0.29 \pm 0.01$& $ 0.02 \pm 0.00$& $ 2.26 \pm 0.02$ & $ 1.86 \pm 0.36$ \\  
+%data4& $ 8.53 \pm 9.01$& $ 0.00 \pm 0.00$& $ 0.96 \pm 0.01$& $ 0.19 \pm 0.02$& $ 5.46 \pm 0.05$ & $ 9.43 \pm 1.27$ \\ 
+%data5& $ 35.32 \pm 14.45$& $ 0.00 \pm 0.00$& $ 3.89 \pm 0.07$& $ 6.47 \pm 0.05$& $ 19.67 \pm 0.12$ & $ 37.09 \pm 10.34$ \\ 
+%diabetes& $ 21.68 \pm 0.57$& $ 0.00 \pm 0.00$& $ 6.09 \pm 0.17$& $ 0.27 \pm 0.00$& $ 27.76 \pm 1.57$ & $ 13.87 \pm 3.48$ \\
+%fourclass& $ 15.14 \pm 8.71$& $ 0.00 \pm 0.00$& $1.82 \pm 0.03$& $ 0.37 \pm 0.00$& $ 10.55 \pm 0.63$ & $ 15.30 \pm 4.23$ \\ 
+%glass& $ 8.29 \pm 0.11$& $ 0.00 \pm 0.00$& $ 0.21 \pm 0.00$& $ 0.01 \pm 0.00$& $ 1.87 \pm 0.07$ & $ 1.69 \pm 0.48$ \\ 
+%heart& $ 0.15 \pm 0.11$& $ 0.00 \pm 0.00$& $ 0.11 \pm 0.00$& $ 0.01 \pm 0.00$& $ 1.92 \pm 0.17$ & $ 1.76 \pm 0.46$ \\ 
+%ionosphere& $ 2.89 \pm 5.61$& $ 0.00 \pm 0.00$& $ 0.58 \pm 0.01$& $ 0.00 \pm 0.00$& $ 3.14 \pm 0.10$ \\ 
+%petals& $ 0.01 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.09 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.55 \pm 0.03$ & $ 0.21 \pm 0.06$ \\ 
+%saturn& $ 5.33 \pm 0.08$& $ 0.00 \pm 0.00$& $ 0.44 \pm 0.01$& $ 0.00 \pm 0.00$& $ 2.05 \pm 0.22$ & $ 1.05 \pm 0.22$ \\ 
+%segment& $ 115.39 \pm 3.76$& $ 0.03 \pm 0.00$& $ 17.66 \pm 1.89$& $ 19.79 \pm 0.70$& $ 85.64 \pm 6.09$ & $ 366.10 \pm 98.97$ \\
+%vehicle& $ 32.88 \pm 0.75$& $ 0.00 \pm 0.00$& $ 4.98 \pm 0.07$& $ 0.54 \pm 0.00$& $ 21.03 \pm 0.93$ & $ 24.87 \pm 5.14$ \\ 
+%wine& $ 0.03 \pm 0.02$& $ 0.00 \pm 0.00$& $ 0.20 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.94 \pm 0.02$ & $ 0.34 \pm 0.10$ \\  \hline
+%\end{tabular}
+%\end{table*}
+
+%TESTING 0.5 0
+%\begin{table*}[]
+%\centering
+%\label{tab.TST_TIME_50_0}
+%\caption{Mean testing time using 50\% of the samples for training with features non-normalized.}
+%\scriptsize
+%\begin{tabular}{l||l|l|l|l|l|l|l}
+%Dataset & ANN   & Bayes  & OPF & EPNN & FEMa & KNN &   SVM     \\ \hline \hline
+%australian& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.02 \pm 0.00$& $ 0.15 \pm 0.01$& $ 0.01 \pm 0.00$	& $ 0.01 \pm 0.00$ \\ 
+%boat& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$	    &$ 0.00 \pm 0.00$	& $ 0.00 \pm 0.00$ \\ 
+%breast& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.09 \pm 0.00$    &$ 0.01 \pm 0.00$	& $ 0.02 \pm 0.00$ \\ 
+%cone& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.03 \pm 0.00$      &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+%data1& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.02 \pm 0.00$& $ 0.03 \pm 0.00$& $ 0.28 \pm 0.00$	    &$ 0.04 \pm 0.00$ 	&$ 0.01 \pm 0.00$ \\ 
+%data2& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$     &$ 0.00 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+%data3& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$     &$ 0.00 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+%data4& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.08 \pm 0.01$     &$ 0.03 \pm 0.00$ 	&$ 0.01 \pm 0.00$ \\ 
+%data5& $ 0.00 \pm 0.00$& $ 0.02 \pm 0.00$& $ 0.03 \pm 0.00$& $ 0.04 \pm 0.00$& $ 0.17 \pm 0.00$     &$ 0.07 \pm 0.00$ 	&$ 0.02 \pm 0.00$ \\ 
+%diabetes& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.12 \pm 0.02$  &$ 0.01 \pm 0.00$ 	&$ 0.01 \pm 0.00$ \\ 
+%fourclass& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.10 \pm 0.00$ &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+%glass& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$     &$ 0.01 \pm 0.00$ 	&$ 0.01 \pm 0.00$ \\ 
+%heart& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.02 \pm 0.00$     &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+%petals& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$    &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+%saturn& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$    &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ 
+%segment& $ 0.00 \pm 0.00$& $ 0.26 \pm 0.00$& $ 0.07 \pm 0.00$& $ 0.21 \pm 0.00$& $ 4.53 \pm 0.38$   &$ 0.12 \pm 0.01$ 	&$ 0.08 \pm 0.01$ \\ 
+%vehicle& $ 0.00 \pm 0.00$& $ 0.02 \pm 0.00$& $ 0.01 \pm 0.00$& $ 0.03 \pm 0.00$& $ 0.38 \pm 0.03$   &$ 0.02 \pm 0.00$ 	&$ 0.05 \pm 0.03$ \\ 
+%wine& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.00 \pm 0.00$& $ 0.01 \pm 0.00$      &$ 0.01 \pm 0.00$ 	&$ 0.00 \pm 0.00$ \\ \hline
+%\end{tabular}
+%\end{table*}
+
+
+\begin{table*}[!htb]
+\begin{center}
+\scriptsize
+\caption{Recognition rates concerning the medium-to-large datasets.}
+\label{tab.L_ACC}
+\begin{tabular}{l|llllllll}
+Dataset & ANN   & Bayes & EPNN  & FEMa  & $k$-NN   & OPF   & SVM   &  \\ \hline \hline
+a1a     & $81.43$ & $79.32$ & $76.10$ & $81.83$ & $82.58$ & $71.27$ & $\mathbf{84.05}$ &  \\
+a2a     & $81.84$ & $79.05$ & $76.15$ & $81.69$ & $82.44$ & $71.72$ & $\mathbf{84.06}$ &  \\
+a3a     & $79.46$ & $79.23$ & $76.08$ & $81.74$ & $82.71$ & $72.53$ & $\mathbf{84.45}$ &  \\
+a4a     & $81.50$ & $79.58$ & $79.73$ & $81.94$ & $83.02$ & $73.77$ & $\mathbf{84.56}$ &  \\
+a5a     & $82.05$ & $79.61$ & $79.56$ & $81.99$ & $83.06$ & $73.43$ & $\mathbf{84.49}$ &  \\ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+
+
+
+%training
+\begin{table*}[!htb]
+\begin{center}
+\caption{\label{tab.L_TR_TIME}Training time concerning the medium-to-large datasets.}
+\scriptsize
+\begin{tabular}{l||l|l|l|l|l|l}
+Dataset & ANN   & Bayes  & OPF & EPNN & $k$-NN  & SVM     \\ \hline \hline
+a1a& $ 477.41 \pm 7.38$& $ 0.44 \pm 0.04$& $ 1.60 \pm 0.14$& $ 7,439.90 \pm 39.26$& $ 387.06 \pm 4.00$& $ 1,130.59 \pm 8.24$ \\ 
+a2a& $ 706.92 \pm 7.42$& $ 0.97 \pm 0.07$& $ 2.72 \pm 0.14$& $ 17,758.61 \pm 757.12$& $ 813.43 \pm 6.59$& $ 2,292.08 \pm 12.09$ \\ 
+a3a& $ 964.27 \pm 4.58$& $ 1.38 \pm 0.03$& $ 5.76 \pm 0.19$& $ 11,336.21 \pm 334.14$& $ 2,592.87 \pm 10.57$& $ 4,557.10 \pm 1.24$ \\ 
+a4a& $ 1,449.42 \pm 1.17$& $ 3.75 \pm 0.11$& $ 12.68 \pm 0.93$& $ 45,847.83 \pm 842.12$& $ 10,470.55 \pm 18.88$& $ 10,870.21 \pm 19.07$ \\ 
+a5a& $ 1,926.00 \pm 22.93$& $ 6.71 \pm 0.23$& $ 24.36 \pm 1.05$& $ 59,763.13 \pm 192.11$& $ 20,256.74 \pm 38.72$ & $ 21,870.21 \pm 75.19$ \\ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+Table~\ref{tab.L_TST_TIME} presents the classification load for all techniques. One can observe ANN as the fastest approach, since it basically needs to forward the input data to the layers computing inner products between the activation values and the weights. However, if one considers the whole computational time (i.e. training+classification), Bayes was the fastest approach followed by FEMa, though the latter being more accurate.
+
+As aforementioned in Section~\ref{ss.complexity}, FEMa uses a $k$-neighborhood to compute the probability function of each test sample to avoid problems with unbalanced datasets. By using $kd$-trees, for instance, we can make FEMa faster by a factor of $\left|{\cal Z}_1\right|/\alpha$, where $\alpha$ is the number of elements of the smallest class.
+
+%testing
+\begin{table*}[!htb]
+\begin{center}
+\caption{\label{tab.L_TST_TIME}Testing time concerning the medium-to-large datasets.}
+\scriptsize
+\begin{tabular}{l||l|l|l|l|l|l|l}
+Dataset & ANN   & Bayes  & OPF & EPNN & FEMa & KNN  & SVM     \\ \hline \hline
+a1a& $ 0.05 \pm 0.00$& $ 42.21 \pm 1.59$& $ 16.46 \pm 0.91$& $ 41.37 \pm 0.00$& $ 89.22 \pm 0.00$& $ 20.01 \pm 0.00$& $ 25.82 \pm 0.76$ \\ 
+a2a& $ 0.06 \pm 0.01$& $ 58.15 \pm 0.36$& $ 24.12 \pm 1.83$& $ 55.34 \pm 0.00$& $ 103.46 \pm 0.00$& $ 30.42 \pm 1.00$& $ 41.38 \pm 2.57$ \\ 
+a3a& $ 0.06 \pm 0.01$& $ 76.48 \pm 3.51$& $ 35.02 \pm 2.06$& $ 74.25 \pm 0.00$& $ 150.07 \pm 0.00$& $ 42.36 \pm 0.24$& $ 48.44 \pm 1.13$ \\ 
+a4a& $ 0.09 \pm 0.01$& $ 108.04 \pm 1.44$& $ 47.92 \pm 1.96$& $ 128.91 \pm 0.00$& $ 168.16 \pm 0.00$& $ 60.81 \pm 0.88$& $ 69.12 \pm 0.21$ \\ 
+a5a& $ 0.05 \pm 0.01$& $ 140.97 \pm 7.23$& $ 58.49 \pm 2.66$& $ 207.23 \pm 0.00$& $ 239.13 \pm 1.39$& $ 92.74 \pm 1.66$ & $108.98 \pm 5.23$\\ \hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+\subsection{Discussion}
+\label{ss.discussion}
+
+The proposed FEMa classifier was compared against six other supervised pattern recognition techniques in two distinct scenarios: small and medium-to-large datasets. Also, with respect to the former situation, we also considered normalized and non-normalized datasets.
+
+From both results, we can observe that FEMa has been placed in the top two first positions for almost all datasets, and it seems to not be affected by non-normalized features. Since FEMa does not require a training step, it has been placed as the second fastest approach (i.e. training+classification), just behind the Bayesian classifier, which has a very fast and simple training phase either. While FEMa has obtained the best results in $9$ datasets (Table~\ref{tab.ACC_50_0}), Bayes achieved the most accurate results in $6$ situations, being the sole best technique in only one dataset (FEMa obtained the best results solely in $3$ datasets).
+
+Another interesting point about FEMa concerns its possibility to be extended, since the reader can evaluate other basis functions to interpolate the probabilistic manifold, as well as we can try to make FEMa even faster by means of $kd$-trees, which are often used to speed up the $k$-nearest neighbours classifier. Therefore, we believe a framework to the development of pattern recognition techniques based on Finite Element Method has been proposed, instead of a single supervised classifier only. Since this version is parameterless, it becomes easier to use and less prone to errors, besides being a deterministic classifier.

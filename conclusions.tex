@@ -1,0 +1,10 @@
+\section{Conclusions and Future Works}
+\label{s.conclusions}
+
+Supervised pattern recognition techniques have been paramount in the last years, mainly due to the increasing number of applications that make use of some decision-making mechanism. Also, the number of new data available at the internet every single day makes some techniques unfeasible to be trained online. That is a crucial shortcoming in several situations, such as active and semi-supervised learning, and intrusion detection in computer networks, for instance. Recommendation systems may be affected, since such models need to be dynamic enough to handle the so-called ``concept drift", i.e. when a user suddenly changes its expected behaviour, thus requiring a new training procedure with the updated data.
+
+In this paper, we proposed FEMa - A Finite Element Machine classifier based on the Finite Element Method theory, which has been extensively used for several purposes in engineering and sciences, but never for classification purposes. The main idea is to learn a probabilistic manifold built upon the training samples, which will become the center of a basis function each. Further, the classification process simply inserts a test sample into the manifold, and computes the probability of that sample to belong to each class.
+
+Experiments against six other well-known supervised pattern recognition techniques showed that FEMa can obtain very competitive results, though being considerably faster than others, since it is parameterless and, in practice, it does not have a training phase. Also, FEMa do not seem to be affected by non-normalized features.
+
+In regard to future works, we aim at extending FEMa for clustering and regression purposes, as well as to evaluate the influence of other basis functions. In addition, we shall implement its optimized version based on $kd$-trees.
