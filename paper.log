@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2017.8.23)  14 MAR 2018 16:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=latex 2017.8.23)  15 MAR 2018 17:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -508,17 +508,17 @@ Overfull \hbox (10.2485pt too wide) in paragraph at lines 7--29
  [][] 
  []
 
-) [7] [8] [9]
-
-LaTeX Warning: Reference `tab.ACC_50_0' on page 10 undefined on input line 153.
-
-
-) (./conclusions.tex
+) [7] [8] [9]) (./conclusions.tex
 Underfull \hbox (badness 4429) in paragraph at lines 4--5
 []\OT1/ptm/m/n/10 Supervised pat-tern recog-ni-tion tech-niques have been
  []
 
-[10]) (./paper.bbl
+[10])
+Underfull \hbox (badness 7415) in paragraph at lines 67--68
+\OT1/ptm/m/n/10 0, #2014/12236-1, #2014/16250-9, and #2016/19403-6,
+ []
+
+(./paper.bbl
 LaTeX Font Info:    Try loading font information for OMS+ptm on input line 30.
  (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
@@ -528,18 +528,14 @@ LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <8> not available
 
 [11]) [12
 
-] (./paper.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
+] (./paper.aux) ) 
 Here is how much of TeX's memory you used:
- 9780 strings out of 493030
- 170476 string characters out of 6136260
- 356036 words of memory out of 5000000
- 13131 multiletter control sequences out of 15000+600000
+ 9779 strings out of 493030
+ 170462 string characters out of 6136260
+ 356045 words of memory out of 5000000
+ 13130 multiletter control sequences out of 15000+600000
  36902 words of font info for 98 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
  36i,14n,40p,1522b,412s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on paper.dvi (12 pages, 136432 bytes).
+Output written on paper.dvi (12 pages, 136040 bytes).
